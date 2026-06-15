@@ -6,9 +6,8 @@
   <title>Plan stołów</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Clicker+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Luxurious+Script&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Luxurious+Script&display=swap" rel="stylesheet">
 
   <style>
     *{box-sizing:border-box}
@@ -17,19 +16,32 @@
       margin:0;
       min-height:100vh;
       font-family:'Libre Baskerville',serif;
-      background-image:url("https://i.postimg.cc/t4T4hbfH/IMG6A9092.jpg");
-      background-size:cover;
-      background-position:center;
-      background-attachment:scroll;
       color:white;
       padding:20px;
+      position:relative;
+      overflow-x:hidden;
     }
 
     body::before{
       content:"";
       position:fixed;
       inset:0;
-      background:linear-gradient(rgba(35,25,18,.35), rgba(35,25,18,.58));
+      background-image:url("https://i.postimg.cc/t4T4hbfH/IMG6A9092.jpg");
+      background-size:cover;
+      background-position:center;
+      filter:blur(7px);
+      transform:scale(1.06);
+      z-index:-2;
+    }
+
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:linear-gradient(
+        rgba(20,15,10,.62),
+        rgba(20,15,10,.72)
+      );
       z-index:-1;
     }
 
@@ -48,14 +60,15 @@
     header{text-align:center}
 
     .names{
-  font-family:'Luxurious Script',cursive;
-  font-size:130px;
-  color:#f7e7c6;
-  line-height:.9;
-  text-shadow:
-    0 2px 4px rgba(0,0,0,.4),
-    0 6px 18px rgba(0,0,0,.35);
-}
+      font-family:'Luxurious Script',cursive;
+      font-size:130px;
+      color:#f7e7c6;
+      line-height:.9;
+      font-weight:400;
+      text-shadow:
+        0 2px 4px rgba(0,0,0,.4),
+        0 6px 18px rgba(0,0,0,.35);
+    }
 
     .ornament{
       color:#f0d5a8;
@@ -156,7 +169,7 @@
       margin:25px auto 0;
       border-radius:24px;
       overflow:hidden;
-      background:transparent;
+      background:#fff;
       border:1px solid rgba(240,213,168,.4);
       box-shadow:0 25px 70px rgba(0,0,0,.45);
     }
@@ -165,28 +178,6 @@
       display:block;
       width:100%;
       height:auto;
-    }
-
-    .plan-overlay{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      pointer-events:none;
-    }
-
-    .table-hotspot{
-      fill:transparent;
-      stroke:transparent;
-      stroke-width:1;
-      transition:fill .25s ease, stroke .25s ease;
-    }
-
-    .table-hotspot.active{
-      fill:rgba(240,213,168,.45);
-      stroke:#f0d5a8;
-      stroke-width:5;
-      filter:drop-shadow(0 0 8px rgba(240,213,168,.85));
     }
 
     @keyframes fadeIn{
@@ -203,7 +194,7 @@
       }
 
       .names{
-        font-size:72px;
+        font-size:95px;
       }
 
       .ornament{
@@ -230,7 +221,7 @@
 
     @media(max-width:420px){
       .names{
-        font-size:62px;
+        font-size:80px;
       }
 
       .subtitle{
@@ -267,23 +258,6 @@
       class="plan-image"
       src="https://i.postimg.cc/T18hqgcv/7E2D8A0D-9B1F-444A-AA6F-6841A01EC019.png"
       alt="Plan sali">
-
-    <svg class="plan-overlay" viewBox="0 0 1000 800" preserveAspectRatio="none">
-      <circle id="t1" class="table-hotspot" cx="158" cy="650" r="30"></circle>
-      <circle id="t2" class="table-hotspot" cx="155" cy="563" r="30"></circle>
-      <circle id="t3" class="table-hotspot" cx="155" cy="472" r="30"></circle>
-      <circle id="t4" class="table-hotspot" cx="155" cy="380" r="30"></circle>
-      <circle id="t5" class="table-hotspot" cx="155" cy="290" r="30"></circle>
-      <circle id="t6" class="table-hotspot" cx="155" cy="200" r="30"></circle>
-      <circle id="t7" class="table-hotspot" cx="175" cy="112" r="30"></circle>
-
-      <circle id="t8" class="table-hotspot" cx="790" cy="148" r="30"></circle>
-      <circle id="t9" class="table-hotspot" cx="810" cy="250" r="30"></circle>
-      <circle id="t10" class="table-hotspot" cx="785" cy="365" r="30"></circle>
-      <circle id="t11" class="table-hotspot" cx="815" cy="485" r="30"></circle>
-      <circle id="t12" class="table-hotspot" cx="785" cy="605" r="30"></circle>
-      <circle id="t13" class="table-hotspot" cx="815" cy="725" r="30"></circle>
-    </svg>
   </div>
 
 </div>
@@ -370,8 +344,6 @@ function searchGuests(){
   const q = normalizeText(document.getElementById("search").value);
   const result = document.getElementById("result");
 
-  clearActiveTable();
-
   if(!q){
     result.innerHTML = "";
     return;
@@ -412,22 +384,10 @@ function showGuestByIndex(index){
   showGuest(guests[index]);
 }
 
-function clearActiveTable(){
-  document.querySelectorAll(".table-hotspot")
-    .forEach(el => el.classList.remove("active"));
-}
-
 function showGuest(found){
   if(!found) return;
 
   document.getElementById("search").blur();
-
-  clearActiveTable();
-
-  const tableEl = document.getElementById("t" + found.table);
-  if(tableEl){
-    tableEl.classList.add("active");
-  }
 
   document.getElementById("result").innerHTML = `
     <div class="result-content">

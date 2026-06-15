@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Plan stołów</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Clicker+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Luxurious+Script&display=swap" rel="stylesheet">
+
+  <style>
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:'Libre Baskerville',serif;
+      background-image:url("https://i.postimg.cc/t4T4hbfH/IMG6A9092.jpg");
+      background-size:cover;
+      background-position:center;
+      background-attachment:scroll;
+      color:white;
+      padding:20px;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:linear-gradient(rgba(35,25,18,.35), rgba(35,25,18,.58));
+      z-index:-1;
+    }
+
+    .main-card{
+      max-width:1050px;
+      margin:auto;
+      padding:30px;
+      border-radius:30px;
+      background:rgba(255,248,238,.14);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      border:1px solid rgba(240,213,168,.35);
+      box-shadow:0 25px 80px rgba(0,0,0,.35);
+    }
+
+    header{text-align:center}
+
+    .names{
+  font-family:'Luxurious Script',cursive;
+  font-size:130px;
+  color:#f7e7c6;
+  line-height:.9;
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.4),
+    0 6px 18px rgba(0,0,0,.35);
+}
+
+    .ornament{
+      color:#f0d5a8;
+      font-size:34px;
+      margin-top:-6px;
+      text-shadow:0 2px 8px rgba(0,0,0,.55);
+    }
+
+    .subtitle{
+      font-family:'Cormorant Garamond',serif;
+      font-size:25px;
+      margin-top:2px;
+      letter-spacing:.5px;
+      text-shadow:0 2px 8px rgba(0,0,0,.7);
+    }
+
+    .search-wrapper{
+      display:flex;
+      justify-content:center;
+      margin:30px 0 18px;
+    }
+
+    input{
+      width:100%;
+      max-width:460px;
+      padding:17px 22px;
+      border-radius:999px;
+      border:1px solid rgba(240,213,168,.85);
+      background:rgba(255,255,255,.94);
+      color:#333;
+      font-family:'Libre Baskerville',serif;
+      font-size:16px;
+      outline:none;
+      box-shadow:0 10px 30px rgba(0,0,0,.22);
+      -webkit-appearance:none;
+    }
+
+    input:focus{
+      border-color:#f0d5a8;
+      box-shadow:0 0 0 4px rgba(240,213,168,.25), 0 10px 30px rgba(0,0,0,.22);
+    }
+
+    .result{
+      text-align:center;
+      min-height:95px;
+      margin-top:15px;
+    }
+
+    .result-content{
+      animation:fadeIn .35s ease;
+    }
+
+    .guest-name{
+      font-size:32px;
+      font-weight:bold;
+      text-shadow:0 2px 8px rgba(0,0,0,.8);
+    }
+
+    .guest-table{
+      display:inline-block;
+      color:#f0d5a8;
+      font-size:38px;
+      font-weight:bold;
+      margin-top:10px;
+      padding:8px 20px;
+      border-radius:999px;
+      background:rgba(0,0,0,.22);
+      border:1px solid rgba(240,213,168,.35);
+      text-shadow:0 2px 8px rgba(0,0,0,.8);
+    }
+
+    .choice-btn{
+      display:block;
+      width:100%;
+      max-width:460px;
+      margin:10px auto;
+      padding:14px 18px;
+      border-radius:999px;
+      border:1px solid rgba(240,213,168,.85);
+      background:rgba(255,255,255,.94);
+      color:#333;
+      font-family:'Libre Baskerville',serif;
+      font-size:16px;
+      cursor:pointer;
+      box-shadow:0 8px 22px rgba(0,0,0,.18);
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+
+    .choice-btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 12px 28px rgba(0,0,0,.24);
+    }
+
+    .plan-wrapper{
+      position:relative;
+      width:100%;
+      max-width:900px;
+      margin:25px auto 0;
+      border-radius:24px;
+      overflow:hidden;
+      background:transparent;
+      border:1px solid rgba(240,213,168,.4);
+      box-shadow:0 25px 70px rgba(0,0,0,.45);
+    }
+
+    .plan-image{
+      display:block;
+      width:100%;
+      height:auto;
+    }
+
+    .plan-overlay{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+    }
+
+    .table-hotspot{
+      fill:transparent;
+      stroke:transparent;
+      stroke-width:1;
+      transition:fill .25s ease, stroke .25s ease;
+    }
+
+    .table-hotspot.active{
+      fill:rgba(240,213,168,.45);
+      stroke:#f0d5a8;
+      stroke-width:5;
+      filter:drop-shadow(0 0 8px rgba(240,213,168,.85));
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(8px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    @media(max-width:768px){
+      body{padding:12px}
+
+      .main-card{
+        padding:20px 16px;
+        border-radius:24px;
+      }
+
+      .names{
+        font-size:72px;
+      }
+
+      .ornament{
+        font-size:30px;
+      }
+
+      .subtitle{
+        font-size:19px;
+      }
+
+      .guest-name{
+        font-size:25px;
+      }
+
+      .guest-table{
+        font-size:30px;
+      }
+
+      input,
+      .choice-btn{
+        font-size:15px;
+      }
+    }
+
+    @media(max-width:420px){
+      .names{
+        font-size:62px;
+      }
+
+      .subtitle{
+        font-size:17px;
+      }
+
+      .main-card{
+        padding:18px 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="main-card">
+
+  <header>
+    <div class="names">Julia & Michał</div>
+    <div class="ornament">❦</div>
+    <div class="subtitle">Znajdź swoje miejsce przy stole</div>
+  </header>
+
+  <div class="search-wrapper">
+    <input id="search" placeholder="Wpisz imię lub nazwisko..." oninput="searchGuests()">
+  </div>
+
+  <div class="result" id="result">
+    <div class="guest-name">Ładowanie listy gości...</div>
+  </div>
+
+  <div class="plan-wrapper" id="planWrapper">
+    <img
+      class="plan-image"
+      src="https://i.postimg.cc/T18hqgcv/7E2D8A0D-9B1F-444A-AA6F-6841A01EC019.png"
+      alt="Plan sali">
+
+    <svg class="plan-overlay" viewBox="0 0 1000 800" preserveAspectRatio="none">
+      <circle id="t1" class="table-hotspot" cx="158" cy="650" r="30"></circle>
+      <circle id="t2" class="table-hotspot" cx="155" cy="563" r="30"></circle>
+      <circle id="t3" class="table-hotspot" cx="155" cy="472" r="30"></circle>
+      <circle id="t4" class="table-hotspot" cx="155" cy="380" r="30"></circle>
+      <circle id="t5" class="table-hotspot" cx="155" cy="290" r="30"></circle>
+      <circle id="t6" class="table-hotspot" cx="155" cy="200" r="30"></circle>
+      <circle id="t7" class="table-hotspot" cx="175" cy="112" r="30"></circle>
+
+      <circle id="t8" class="table-hotspot" cx="790" cy="148" r="30"></circle>
+      <circle id="t9" class="table-hotspot" cx="810" cy="250" r="30"></circle>
+      <circle id="t10" class="table-hotspot" cx="785" cy="365" r="30"></circle>
+      <circle id="t11" class="table-hotspot" cx="815" cy="485" r="30"></circle>
+      <circle id="t12" class="table-hotspot" cx="785" cy="605" r="30"></circle>
+      <circle id="t13" class="table-hotspot" cx="815" cy="725" r="30"></circle>
+    </svg>
+  </div>
+
+</div>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFFq0_di5FNDfpTiuLHIZJI0dRZqe3XG7e1blZsijJQxigopOLovuk8hqhHNmLijvMHNM_8BlABhdQ/pub?output=csv";
+
+let guests = [];
+
+fetch(CSV_URL)
+  .then(response => response.text())
+  .then(csv => {
+    guests = parseCSV(csv);
+    document.getElementById("result").innerHTML = "";
+  })
+  .catch(() => {
+    document.getElementById("result").innerHTML =
+      '<div class="result-content"><div class="guest-name">Nie udało się załadować listy gości</div></div>';
+  });
+
+function normalizeText(text){
+  return String(text)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
+function escapeHTML(str){
+  return String(str).replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[char]));
+}
+
+function parseCSVLine(line){
+  const result = [];
+  let current = "";
+  let inQuotes = false;
+
+  for(let i = 0; i < line.length; i++){
+    const char = line[i];
+    const next = line[i + 1];
+
+    if(char === '"' && next === '"'){
+      current += '"';
+      i++;
+    } else if(char === '"'){
+      inQuotes = !inQuotes;
+    } else if(char === "," && !inQuotes){
+      result.push(current);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+
+  result.push(current);
+  return result.map(v => v.trim());
+}
+
+function parseCSV(csv){
+  const rows = csv.trim().split(/\r?\n/).slice(1);
+
+  return rows.map(row => {
+    const cols = parseCSVLine(row);
+
+    const imie = (cols[0] || "").trim();
+    const nazwisko = (cols[1] || "").trim();
+    const table = (cols[2] || "").trim();
+
+    return {
+      name: normalizeText(imie + " " + nazwisko),
+      display: imie + " " + nazwisko,
+      table: table
+    };
+  }).filter(g => g.display.trim() !== "");
+}
+
+function searchGuests(){
+  const q = normalizeText(document.getElementById("search").value);
+  const result = document.getElementById("result");
+
+  clearActiveTable();
+
+  if(!q){
+    result.innerHTML = "";
+    return;
+  }
+
+  if(q.length < 3){
+    result.innerHTML = '<div class="result-content"><div class="guest-name">Wpisz minimum 3 litery</div></div>';
+    return;
+  }
+
+  const matches = guests.filter(g => g.name.includes(q));
+
+  if(matches.length === 0){
+    result.innerHTML = '<div class="result-content"><div class="guest-name">Nie znaleziono gościa</div></div>';
+    return;
+  }
+
+  if(matches.length === 1){
+    showGuest(matches[0]);
+    return;
+  }
+
+  result.innerHTML = `
+    <div class="result-content">
+      <div class="guest-name">Wybierz osobę:</div>
+      <div style="margin-top:15px;">
+        ${matches.slice(0,12).map(g => `
+          <button class="choice-btn" onclick="showGuestByIndex(${guests.indexOf(g)})">
+            ${escapeHTML(g.display)}
+          </button>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function showGuestByIndex(index){
+  showGuest(guests[index]);
+}
+
+function clearActiveTable(){
+  document.querySelectorAll(".table-hotspot")
+    .forEach(el => el.classList.remove("active"));
+}
+
+function showGuest(found){
+  if(!found) return;
+
+  document.getElementById("search").blur();
+
+  clearActiveTable();
+
+  const tableEl = document.getElementById("t" + found.table);
+  if(tableEl){
+    tableEl.classList.add("active");
+  }
+
+  document.getElementById("result").innerHTML = `
+    <div class="result-content">
+      <div class="guest-name">${escapeHTML(found.display)}</div>
+      <div class="guest-table">✨ Stolik ${escapeHTML(found.table)}</div>
+    </div>
+  `;
+
+  document.getElementById("planWrapper").scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
+}
+</script>
+
+</body>
+</html>
